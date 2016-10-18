@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <queue>
 
 #define MAX 200
 #define MAX_K 31
@@ -26,15 +25,42 @@ public:
     int d;
 };
 
+State queue[MAX*MAX*12];
+int head, tail;
+
+void reset() {
+    head = 0;
+    tail = 0;
+}
+
+int size() {
+    return head-tail;
+}
+
+void push(State s) {
+    queue[tail] = s;
+    tail++;
+}
+
+void pop() {
+    head++;
+}
+
+bool isEmpty() {
+    return size() == 0? true: false;
+}
+
+State front() {
+    return queue[head];
+}
 
 int findMinPath() {
     State s;
-    std::queue<State> q;
-    q.push(s);
+    push(s);
 
-    while (!q.empty()) {
-        State s = q.front();
-        q.pop();
+    while (!isEmpty()) {
+        State s = front();
+        pop();
 
         if (s.x == W - 1 && s.y == H - 1) {
             return s.d;
@@ -54,7 +80,7 @@ int findMinPath() {
                     0 <= si.y && si.y <= H - 1) {
                     if (visited[si.y][si.x][si.k] == -1) {
                         visited[si.y][si.x][si.k] = 1;
-                        q.push(si);
+                        push(si);
                     }
                 }
             }
@@ -72,7 +98,7 @@ int findMinPath() {
                 0 <= si.y && si.y <= H - 1) {
                 if (visited[si.y][si.x][si.k] == -1) {
                     visited[si.y][si.x][si.k] = 1;
-                    q.push(si);
+                    push(si);
                 }
             }
         }
@@ -93,7 +119,7 @@ int main() {
             }
         }
     }
-
+    reset();
     int ret = findMinPath();
     printf("%d\n", ret);
     return 0;
